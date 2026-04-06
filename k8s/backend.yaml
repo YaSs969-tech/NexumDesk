@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexumdesk-backend
+  namespace: nexumdesk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexumdesk-backend
+  template:
+    metadata:
+      labels:
+        app: nexumdesk-backend
+    spec:
+      containers:
+        - name: backend
+          image: nexumdesk-backend:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "3001"
+            - name: SQLITE_FILE
+              value: /data/nexumdesk.db
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: nexumdesk-secrets
+                  key: jwt-secret
+          ports:
+            - containerPort: 3001
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - name: sqlite-data
+              mountPath: /data
+      volumes:
+        - name: sqlite-data
+          persistentVolumeClaim:
+            claimName: nexumdesk-sqlite-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexumdesk-backend
+  namespace: nexumdesk
+spec:
+  selector:
+    app: nexumdesk-backend
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 3001

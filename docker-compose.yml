@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - '5000:5000'
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - SQLITE_FILE=/data/nexumdesk.db
+      - JWT_SECRET=dev_secret_key
+    volumes:
+      - ./backend/data:/data
+
+  frontend:
+    build: ./frontend
+    ports:
+      - '5001:80'
+    environment:
+      - VITE_API_URL=http://localhost:5000/api/v1

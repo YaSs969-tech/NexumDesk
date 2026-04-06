@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nexumdesk
+  namespace: nexumdesk
+  annotations:
+    kubernetes.io/ingress.class: gce
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: nexumdesk-backend
+                port:
+                  number: 5000
+          - path: /health
+            pathType: Prefix
+            backend:
+              service:
+                name: nexumdesk-backend
+                port:
+                  number: 5000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nexumdesk-frontend
+                port:
+                  number: 80
