@@ -102,10 +102,10 @@ jobs:
       - name: Apply Kubernetes manifests
         shell: bash
         run: |
-          if ! kubectl get pvc nexumdesk-sqlite-pvc -n "${NAMESPACE}" >/dev/null 2>&1; then
+          if ! kubectl get pvc nexumdesk-sqlite-pvc-v2 -n "${NAMESPACE}" >/dev/null 2>&1; then
             kubectl apply -f k8s/backend-pvc.yaml
           else
-            echo "PVC nexumdesk-sqlite-pvc already exists; skipping immutable PVC apply."
+            echo "PVC nexumdesk-sqlite-pvc-v2 already exists; skipping immutable PVC apply."
           fi
           kubectl apply -f k8s/backend.yaml
           kubectl apply -f k8s/frontend.yaml

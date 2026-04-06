@@ -59,7 +59,7 @@ spec:
       volumes:
         - name: sqlite-data
           persistentVolumeClaim:
-            claimName: nexumdesk-sqlite-pvc
+            claimName: nexumdesk-sqlite-pvc-v2
 ---
 apiVersion: v1
 kind: Service
