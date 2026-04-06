@@ -9,9 +9,10 @@ Use this file as the main entry point for NexumDesk documentation.
 3. PREZENTARE_EVALUARE.md
 4. DEPLOYMENT.md
 5. GCP_GKE_CICD.md
-6. REPORTS.md
-7. TROUBLESHOOTING.md
-8. REQUIREMENTS_CLOSURE.md
+6. RAPORT_LABORATOARE_1_4.md
+7. REPORTS.md
+8. TROUBLESHOOTING.md
+9. REQUIREMENTS_CLOSURE.md
 
 ## Documents
 
@@ -20,6 +21,7 @@ Use this file as the main entry point for NexumDesk documentation.
 | [QUICKSTART.md](QUICKSTART.md) | Fast setup for local and Docker usage. |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Technical structure of frontend, backend, data, auth, and runtime. |
 | [GCP_GKE_CICD.md](GCP_GKE_CICD.md) | Google Cloud GKE CI/CD flow for laboratory requirement 4. |
+| [RAPORT_LABORATOARE_1_4.md](RAPORT_LABORATOARE_1_4.md) | Detailed Romanian lab report for requirements 1-4 with screenshot placeholders. |
 | [PREZENTARE_EVALUARE.md](PREZENTARE_EVALUARE.md) | Slide-by-slide presentation and live demo guide for project evaluation. |
 | [DEPLOYMENT.md](DEPLOYMENT.md) | Deploy patterns for Docker Compose, Kubernetes, Terraform, CI/CD. |
 | [REPORTS.md](REPORTS.md) | Manager Reports page behavior, metrics, date filtering, PDF/XLSX export. |
