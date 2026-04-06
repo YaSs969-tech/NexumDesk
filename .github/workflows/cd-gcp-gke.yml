@@ -100,8 +100,13 @@ jobs:
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Apply Kubernetes manifests
+        shell: bash
         run: |
-          kubectl apply -f k8s/backend-pvc.yaml
+          if ! kubectl get pvc nexumdesk-sqlite-pvc -n "${NAMESPACE}" >/dev/null 2>&1; then
+            kubectl apply -f k8s/backend-pvc.yaml
+          else
+            echo "PVC nexumdesk-sqlite-pvc already exists; skipping immutable PVC apply."
+          fi
           kubectl apply -f k8s/backend.yaml
           kubectl apply -f k8s/frontend.yaml
           kubectl apply -f k8s/ingress.yaml
