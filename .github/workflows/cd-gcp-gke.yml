@@ -124,3 +124,23 @@ jobs:
         run: |
           kubectl rollout status deployment/nexumdesk-backend -n "${NAMESPACE}" --timeout=300s
           kubectl rollout status deployment/nexumdesk-frontend -n "${NAMESPACE}" --timeout=300s
+
+      - name: Collect backend diagnostics on failure
+        if: failure()
+        shell: bash
+        run: |
+          echo "=== Pods ==="
+          kubectl get pods -n "${NAMESPACE}" -o wide || true
+          echo "=== Backend describe ==="
+          kubectl describe deployment nexumdesk-backend -n "${NAMESPACE}" || true
+          BACKEND_POD="$(kubectl get pods -n "${NAMESPACE}" -l app=nexumdesk-backend -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)"
+          if [ -n "${BACKEND_POD}" ]; then
+            echo "=== Backend pod describe ==="
+            kubectl describe pod "${BACKEND_POD}" -n "${NAMESPACE}" || true
+            echo "=== Backend logs ==="
+            kubectl logs "${BACKEND_POD}" -n "${NAMESPACE}" --tail=200 || true
+            echo "=== Backend previous logs ==="
+            kubectl logs "${BACKEND_POD}" -n "${NAMESPACE}" --previous --tail=200 || true
+          fi
+          echo "=== Namespace events ==="
+          kubectl get events -n "${NAMESPACE}" --sort-by=.lastTimestamp || true
