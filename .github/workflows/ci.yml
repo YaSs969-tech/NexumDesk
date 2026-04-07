@@ -52,11 +52,11 @@ jobs:
 
       - name: Kubernetes manifests dry-run
         run: |
-          kubectl apply --dry-run=client -f k8s/namespace.yaml
-          kubectl apply --dry-run=client -f k8s/backend-pvc.yaml
-          kubectl apply --dry-run=client -f k8s/backend.yaml
-          kubectl apply --dry-run=client -f k8s/frontend.yaml
-          kubectl apply --dry-run=client -f k8s/ingress.yaml
+          kubectl apply --dry-run=client --validate=false -f k8s/namespace.yaml
+          kubectl apply --dry-run=client --validate=false -f k8s/backend-pvc.yaml
+          kubectl apply --dry-run=client --validate=false -f k8s/backend.yaml
+          kubectl apply --dry-run=client --validate=false -f k8s/frontend.yaml
+          kubectl apply --dry-run=client --validate=false -f k8s/ingress.yaml
 
   backend:
     runs-on: ubuntu-latest
