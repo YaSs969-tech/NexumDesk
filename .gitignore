@@ -55,3 +55,6 @@ coverage/
 *.log
 tmp/
 temp/
+
+# .tar
+*.tar
