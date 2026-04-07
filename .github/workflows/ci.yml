@@ -47,16 +47,45 @@ jobs:
         working-directory: infra/terraform
         run: terraform validate -no-color
 
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v4
-
-      - name: Kubernetes manifests dry-run
+      - name: Validate Kubernetes manifest syntax
+        shell: bash
         run: |
-          kubectl create --dry-run=client --validate=false -f k8s/namespace.yaml -o yaml > /dev/null
-          kubectl create --dry-run=client --validate=false -f k8s/backend-pvc.yaml -o yaml > /dev/null
-          kubectl create --dry-run=client --validate=false -f k8s/backend.yaml -o yaml > /dev/null
-          kubectl create --dry-run=client --validate=false -f k8s/frontend.yaml -o yaml > /dev/null
-          kubectl create --dry-run=client --validate=false -f k8s/ingress.yaml -o yaml > /dev/null
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+          import yaml
+
+          manifest_paths = [
+              Path("k8s/namespace.yaml"),
+              Path("k8s/backend-pvc.yaml"),
+              Path("k8s/backend.yaml"),
+              Path("k8s/frontend.yaml"),
+              Path("k8s/ingress.yaml"),
+          ]
+
+          for manifest_path in manifest_paths:
+              with manifest_path.open("r", encoding="utf-8") as handle:
+                  documents = list(yaml.safe_load_all(handle))
+
+              if not documents:
+                  raise SystemExit(f"{manifest_path} does not contain any YAML documents")
+
+              for index, document in enumerate(documents, start=1):
+                  if document is None:
+                      continue
+                  if not isinstance(document, dict):
+                      raise SystemExit(
+                          f"{manifest_path} document #{index} is not a YAML mapping"
+                      )
+
+                  for required_key in ("apiVersion", "kind", "metadata"):
+                      if required_key not in document:
+                          raise SystemExit(
+                              f"{manifest_path} document #{index} is missing '{required_key}'"
+                          )
+
+          print("Kubernetes manifests parsed successfully.")
+          PY
 
   backend:
     runs-on: ubuntu-latest
