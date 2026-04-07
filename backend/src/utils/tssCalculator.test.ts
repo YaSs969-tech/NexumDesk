@@ -133,9 +133,9 @@ describe('tssCalculator utilities', () => {
     });
 
     it('threshold sev2 is clamped to not exceed sev1', () => {
-      // Providing sev2 > sev1; normalizeTssThresholds enforces sev2 <= sev1
-      // So tss=4.5 should still be CRITICAL
-      expect(tssToSeverity(4.5, { sev1: 5, sev2: 10 })).toBe('CRITICAL');
+      // Providing sev2 > sev1 clamps sev2 down to sev1.
+      // With sev1=5, a score below 5 should not reach CRITICAL/HIGH.
+      expect(tssToSeverity(4.5, { sev1: 5, sev2: 10 })).toBe('MEDIUM');
     });
   });
 });

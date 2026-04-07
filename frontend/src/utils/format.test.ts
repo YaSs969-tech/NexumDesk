@@ -5,6 +5,11 @@ import {
   formatDurationMinutes,
   formatPriorityLabel,
   formatSeverityLabel,
+  getPrioritySource,
+  getSeveritySource,
+  isActiveStatus,
+  isResolvedStatus,
+  normalizeStatus,
   formatTime,
   generateNDI,
   isNewIncident,
@@ -60,5 +65,44 @@ describe('format utilities', () => {
     expect(formatSeverityLabel('LOW')).toBe('SEV4');
     expect(formatPriorityLabel('P2')).toBe('HIGH');
     expect(formatPriorityLabel('unknown')).toBe('MEDIUM');
+  });
+
+  it('normalizes and classifies incident statuses', () => {
+    expect(normalizeStatus(' in progress ')).toBe('IN_PROGRESS');
+    expect(isActiveStatus('pending')).toBe(true);
+    expect(isActiveStatus('resolved')).toBe(false);
+    expect(isResolvedStatus(' resolved ')).toBe(true);
+  });
+
+  it('derives priority and severity from incident fallbacks', () => {
+    expect(
+      getPrioritySource({
+        priority: null,
+        calculated_priority: 'P2',
+        urgency: 'HIGH',
+      })
+    ).toBe('P2');
+
+    expect(
+      getPrioritySource({
+        priority: undefined,
+        calculated_priority: undefined,
+        urgency: 'CRITICAL',
+      })
+    ).toBe('CRITICAL');
+
+    expect(
+      getSeveritySource({
+        severity: null,
+        calculated_severity: 'HIGH',
+      })
+    ).toBe('HIGH');
+
+    expect(
+      getSeveritySource({
+        severity: undefined,
+        calculated_severity: undefined,
+      })
+    ).toBe('SEV-3');
   });
 });
