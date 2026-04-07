@@ -162,8 +162,3 @@ kubectl get pods -n nexumdesk
 kubectl get svc -n nexumdesk
 kubectl rollout status deployment/nexumdesk-backend -n nexumdesk
 kubectl rollout status deployment/nexumdesk-frontend -n nexumdesk
-```
-
-## Lab 4 Conclusion
-
-This flow satisfies the laboratory requirement of implementing a CI/CD flow on **Google Cloud** for deployment to **GKE**.
